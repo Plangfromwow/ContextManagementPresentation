@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Intentional Compaction</title>
+    <link rel="stylesheet" href="../theme.css" />
+  </head>
+  <body data-prev="04-naive-approach.html" data-next="06-framework.html">
+    <main>
+      <section class="slide">
+        <header>
+          <h1 class="section-title">Intentional Compaction</h1>
+          <p class="subtitle">Treat context as a managed resource.</p>
+        </header>
+        <div class="grid-2">
+          <div class="card">
+            <h3>What Eats Context?</h3>
+            <ul class="list">
+              <li>Searching for files across services</li>
+              <li>Understanding code flow and dependencies</li>
+              <li>Applying and reverting edits</li>
+              <li>Test/build output logs</li>
+              <li>Huge JSON blobs from tool calls</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>The Solution</h3>
+            <p>Pause and distill work into structured artifacts before context fills up.</p>
+            <p><em>"Write everything so far to progress.md — the goal, approach, steps done, and current issue."</em></p>
+            <p><strong>Keep context utilization in the 40-60% range.</strong></p>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="04-naive-approach.html">Prev</a>
+          <a href="../index.html">All slides</a>
+          <a href="06-framework.html">Next</a>
+        </nav>
+      </section>
+    </main>
+    <script src="../nav.js"></script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tooling: Copilot CLI & Instruction Files</title>
+    <link rel="stylesheet" href="../theme.css" />
+  </head>
+  <body data-prev="09-microservices.html" data-next="11-github-structure.html">
+    <main>
+      <section class="slide">
+        <header>
+          <h1 class="section-title">Tooling: Copilot CLI & Instruction Files</h1>
+        </header>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Copilot CLI</h3>
+            <ul class="list">
+              <li>Install: <code>npm install -g @github/copilot</code></li>
+              <li>/model — select AI model</li>
+              <li>/init — setup instructions</li>
+              <li>@file — include files in context</li>
+            </ul>
+            <p class="subtitle"><strong>Models we use:</strong> Claude Opus 4.6, GPT-5.3-Codex</p>
+          </div>
+          <div class="card">
+            <h3>Instruction File Hierarchy</h3>
+            <ol class="list">
+              <li>CLAUDE.md / AGENTS.md (git root)</li>
+              <li>.github/instructions/**/*.instructions.md</li>
+              <li>.github/copilot-instructions.md</li>
+              <li>$HOME/.copilot/copilot-instructions.md</li>
+              <li>COPILOT_CUSTOM_INSTRUCTIONS_DIRS</li>
+            </ol>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="09-microservices.html">Prev</a>
+          <a href="../index.html">All slides</a>
+          <a href="11-github-structure.html">Next</a>
+        </nav>
+      </section>
+    </main>
+    <script src="../nav.js"></script>
+  </body>
+</html>
