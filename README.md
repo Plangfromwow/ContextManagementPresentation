@@ -4,9 +4,9 @@ This repo holds the source and training material for a slide deck on context eng
 
 ## What's Here
 
-- **create-presentation.js**: The slide deck generator built with PptxGenJS and React server rendering.
-- **Context-Engineering-Presentation.pptx** and **Context-Engineering-Presentation-v2.pptx**: Generated presentation files.
-- **theme-showcase.pdf**: Visual reference for the deck theme.
+- **src/create-presentation.js**: The slide deck generator built with PptxGenJS and React server rendering.
+- **presentations/Context-Engineering-Presentation.pptx**, **presentations/Context-Engineering-Presentation-v2.pptx**, and **presentations/Context-Engineering-Presentation-v3.pptx**: Generated presentation files.
+- **assets/theme-showcase.pdf**: Visual reference for the deck theme.
 - **training/**: Short docs for installing Copilot CLI and the expected `.github` folder structure.
 - **Overflow/**: Extra Claude Code-specific commands and archived prompts I no longer need, but want to keep nearby.
 
@@ -21,9 +21,9 @@ The `Overflow/` folder is intentionally outside `.github/` because it is not par
 
 ## Running the Generator
 
-The generator is the entry point for creating the PPTX. It currently writes to a hard-coded path inside [create-presentation.js](create-presentation.js).
+The generator is the entry point for creating the PPTX. It writes to [presentations/](presentations/) from [src/create-presentation.js](src/create-presentation.js).
 
 1. Install dependencies: `npm install`
-2. Run the generator: `node create-presentation.js`
+2. Run the generator: `node src/create-presentation.js`
 
 Update the output path in the script if you want the file written somewhere else.

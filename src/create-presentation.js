@@ -1,3 +1,7 @@
+const path = require("path");
+const fs = require("fs");
+const os = require("os");
+const { execFileSync } = require("child_process");
 const pptxgen = require("pptxgenjs");
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
@@ -57,6 +61,40 @@ function addTopAccent(slide) {
   slide.addShape("rect", {
     x: 0, y: 0, w: 10, h: 0.06, fill: { color: C.accent },
   });
+}
+
+function fixNotesMasterOrder(pptxPath) {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pptx-fix-"));
+  const unpackScript = path.join(__dirname, "..", ".github", "skills", "pptx", "scripts", "office", "unpack.py");
+  const packScript = path.join(__dirname, "..", ".github", "skills", "pptx", "scripts", "office", "pack.py");
+  const presentationXmlPath = path.join(tempDir, "ppt", "presentation.xml");
+
+  try {
+    execFileSync("python", [unpackScript, pptxPath, tempDir], { stdio: "ignore" });
+
+    const xml = fs.readFileSync(presentationXmlPath, "utf-8");
+    const notesMatch = xml.match(/\s*<p:notesMasterIdLst>[\s\S]*?<\/p:notesMasterIdLst>/);
+    if (!notesMatch) {
+      return;
+    }
+
+    const xmlWithoutNotes = xml.replace(notesMatch[0], "");
+    const notesBlock = notesMatch[0].trimStart();
+
+    let updatedXml = xmlWithoutNotes;
+    const masterCloseMatch = xmlWithoutNotes.match(/<\/p:sldMasterIdLst>/);
+    if (masterCloseMatch) {
+      updatedXml = xmlWithoutNotes.replace(masterCloseMatch[0], `${masterCloseMatch[0]}\n  ${notesBlock}`);
+    }
+
+    if (updatedXml !== xml) {
+      fs.writeFileSync(presentationXmlPath, updatedXml, "utf-8");
+    }
+
+    execFileSync("python", [packScript, tempDir, pptxPath, "--validate", "false"], { stdio: "ignore" });
+  } catch (error) {
+    console.warn("Warning: PPTX notes master reorder failed:", error.message);
+  }
 }
 
 async function main() {
@@ -749,9 +787,13 @@ async function main() {
       { text: "  /init   — setup instructions", options: { fontFace: "Consolas", fontSize: 11, breakLine: true } },
       { text: "  @file   — include files in context", options: { fontFace: "Consolas", fontSize: 11, breakLine: true } },
       { text: "", options: { breakLine: true } },
+      { text: "Models we use:", options: { bold: true, breakLine: true } },
+      { text: "  Claude Opus 4.6", options: { fontFace: "Consolas", fontSize: 11, breakLine: true } },
+      { text: "  GPT-5.3-Codex", options: { fontFace: "Consolas", fontSize: 11, breakLine: true } },
+      { text: "", options: { breakLine: true } },
       { text: "Reads instruction files automatically from the repo.", options: { italic: true } },
     ], {
-      x: 0.85, y: 1.9, w: 3.7, h: 3.0,
+      x: 0.85, y: 1.85, w: 3.7, h: 3.2,
       fontSize: 13, fontFace: "Calibri", color: C.darkText, paraSpaceAfter: 2,
     });
 
@@ -818,7 +860,6 @@ async function main() {
     const tree = [
       ".github/",
       "  agents/              # Specialized subagents",
-      "  commands/            # Slash commands  ",
       "  prompts/             # Reusable templates",
       "  skills/              # Extended capabilities",
       "  copilot-instructions.md",
@@ -837,7 +878,6 @@ async function main() {
 
     const items = [
       { name: "agents/", desc: "Specialized helpers for research, analysis, pattern-finding" },
-      { name: "commands/", desc: "Interactive /slash workflows: /create_plan, /commit" },
       { name: "prompts/", desc: "Reusable templates for research, planning, handoffs" },
       { name: "skills/", desc: "Extended capabilities: docx, pdf, xlsx, pptx" },
       { name: "copilot-instructions.md", desc: "Global context: what the project is, core principles" },
@@ -1050,8 +1090,9 @@ async function main() {
   }
 
   // ── Write file ──
-  const outputPath = "/Users/jacob/source/repos/PersonalNotes/Personal/0 Projects/Context Management Talk/Context-Engineering-Presentation.pptx";
+  const outputPath = path.join(__dirname, "..", "presentations", "Context-Engineering-Presentation-v3.pptx");
   await pres.writeFile({ fileName: outputPath });
+  fixNotesMasterOrder(outputPath);
   console.log(`Presentation saved to: ${outputPath}`);
 }
 
