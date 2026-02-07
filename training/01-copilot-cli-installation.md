@@ -123,4 +123,11 @@ Copilot CLI reads instructions from these locations (in order):
 
 ## Next Steps
 
-See the companion document **"02-github-folder-structure.md"** for how to set up custom agents, prompts, and skills in the `.github` folder.
+See the companion document **"02-github-folder-structure.md"** for how this repo organizes the `.github` folder.
+
+In this repo, the `.github` layout includes:
+
+- `agents/`
+- `prompts/`
+- `skills/`
+- `copilot-instructions.md`

@@ -9,9 +9,7 @@ This document explains how our `.github` folder is organized to customize and ex
 ```
 .github/
 ├── agents/                  # Custom subagents for specialized tasks
-├── commands/                # Slash command definitions
 ├── prompts/                 # Reusable prompt templates
-├── prompts-archive/         # Archived/deprecated prompts
 ├── skills/                  # Extended capabilities (docx, pdf, etc.)
 └── copilot-instructions.md  # Global workspace instructions
 ```
@@ -57,7 +55,6 @@ Subagents are **specialized AI helpers** that run in separate contexts. They kee
 | `codebase-locator.md` | Find WHERE files and components live |
 | `codebase-analyzer.md` | Understand HOW code works |
 | `codebase-pattern-finder.md` | Find similar implementations |
-| `database-query.md` | Query the Finys database |
 | `docs-locator.md` | Find existing documentation |
 | `docs-analyzer.md` | Extract insights from docs |
 | `web-search-researcher.md` | Research external info |
@@ -84,7 +81,7 @@ You are a specialist at finding WHERE code lives...
 In your conversation, Copilot will automatically spawn these agents:
 ```
 Use codebase-locator: "Find all files related to payment processing"
-Use database-query: "What tables store claim data?"
+Use docs-locator: "Find prior research on context engineering"
 ```
 
 ---
@@ -97,22 +94,21 @@ Prompts are **predefined workflows** you can invoke to perform common tasks cons
 
 | Category | Prompt | Purpose |
 |----------|--------|---------|
-| **Research** | `research_codebase.prompt.md` | Comprehensive codebase research |
-| **Planning** | `create_plan.prompt.md` | Create detailed implementation plans |
+| **Research** | `research_codebase_generic.prompt.md` | Comprehensive codebase research |
+| **Planning** | `create_plan_generic.prompt.md` | Create detailed implementation plans |
 | | `iterate_plan.prompt.md` | Update existing plans |
 | | `validate_plan.prompt.md` | Verify implementation against plan |
 | **Implementation** | `implement_plan.prompt.md` | Execute a plan phase by phase |
 | **Session** | `create_handoff.prompt.md` | Create handoff when stopping work |
 | | `resume_handoff.prompt.md` | Resume from a handoff |
-| **Git** | `commit.prompt.md` | Create well-structured commits |
-| | `describe_pr.prompt.md` | Generate PR descriptions |
+| **Utilities** | `debug.prompt.md` | Debug or triage issues |
 
 ### Prompt File Structure:
 
 ```markdown
 ---
 description: Create detailed implementation plans...
-model: Claude Opus 4.5 (copilot)
+model: Claude Opus 4.6 (copilot) or GPT-5.3-Codex
 ---
 
 # Implementation Plan
@@ -125,56 +121,11 @@ You are tasked with creating detailed implementation plans...
 ```
 
 ### How to Use:
-Reference prompts directly in your conversation or use the command versions in `commands/`.
+Reference prompts directly in your conversation and let Copilot follow the workflow defined in the template.
 
 ---
 
-## 4. `commands/` - Slash Commands
-
-Commands are **interactive slash commands** that execute specific workflows.
-
-### Our Commands:
-
-| Command | Purpose |
-|---------|---------|
-| `/commit` | Create git commits with proper messages |
-| `/create_plan` | Start the planning workflow |
-| `/iterate_plan` | Update an existing plan |
-| `/implement_plan` | Execute a plan step by step |
-| `/research_codebase` | Research a topic in the codebase |
-| `/create_handoff` | Create a handoff document |
-| `/resume_handoff` | Resume from a handoff |
-| `/describe_pr` | Generate a PR description |
-
-### Command File Structure:
-
-```markdown
----
-description: Create git commits with user approval...
----
-
-# Commit Changes
-
-You are tasked with creating git commits...
-
-## Process:
-1. Think about what changed
-2. Plan your commit(s)
-3. Present your plan to the user
-4. Execute upon confirmation
-```
-
-### How to Use:
-Type the command directly in Copilot CLI:
-```
-/create_plan docs/shared/tickets/ticket_1234.md
-/commit
-/describe_pr
-```
-
----
-
-## 5. `skills/` - Extended Capabilities
+## 4. `skills/` - Extended Capabilities
 
 Skills provide **specialized knowledge and tools** for specific file types or tasks.
 
@@ -197,6 +148,12 @@ Skills are automatically invoked when relevant. For example, if you ask Copilot 
 
 ---
 
+## Repo-Specific Differences
+
+This repository also includes an `Overflow/` folder outside of `.github/`. It is a holding area for Claude Code-specific commands and archived prompts that are not part of the active Copilot CLI configuration.
+
+---
+
 ## Workflow: How It All Fits Together
 
 ```
@@ -207,14 +164,8 @@ Skills are automatically invoked when relevant. For example, if you ask Copilot 
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  commands/                                                  │
-│  User invokes: /create_plan                                 │
-└─────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────┐
 │  prompts/                                                   │
-│  Command uses: create_plan.prompt.md template               │
+│  Reusable workflow templates                                │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -236,9 +187,8 @@ Skills are automatically invoked when relevant. For example, if you ask Copilot 
 
 1. **`copilot-instructions.md`** = Global context and guidelines
 2. **`agents/`** = Specialized AI helpers for parallel research
-3. **`commands/`** = Slash commands for interactive workflows  
-4. **`prompts/`** = Reusable templates for consistent processes
-5. **`skills/`** = Extended capabilities for specific file types
+3. **`prompts/`** = Reusable templates for consistent processes
+4. **`skills/`** = Extended capabilities for specific file types
 
 ---
 
